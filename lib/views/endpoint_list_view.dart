@@ -259,10 +259,13 @@ class _ListHeader extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Text(
-            'Desliza para actualizar',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontSize: 11,
+          Flexible(
+            child: Text(
+              'Desliza para actualizar',
+              textAlign: TextAlign.end,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 11,
+              ),
             ),
           ),
         ],

@@ -64,29 +64,42 @@ class DashboardView extends StatelessWidget {
                 ),
               ),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              sliver: SliverGrid(
-                gridDelegate:
-                    const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 430,
-                      mainAxisExtent: 168,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final ApiEndpoint endpoint = ApiEndpoint.values[index];
-                  return EndpointCard(
-                    key: ValueKey<String>('endpoint-${endpoint.routeSegment}'),
-                    endpoint: endpoint,
-                    onTap: () => context.pushNamed(
-                      RouteNames.list,
-                      pathParameters: <String, String>{
-                        'endpoint': endpoint.routeSegment,
-                      },
-                    ),
-                  );
-                }, childCount: ApiEndpoint.values.length),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    final double available = constraints.maxWidth;
+                    if (available <= 0) return const SizedBox.shrink();
+                    const double spacing = 12;
+                    final int columns =
+                        (available / 340).floor().clamp(1, 4);
+                    final double cardWidth =
+                        (available - spacing * (columns - 1)) / columns;
+                    return Wrap(
+                      spacing: spacing,
+                      runSpacing: spacing,
+                      children: ApiEndpoint.values.map((ApiEndpoint endpoint) {
+                        return SizedBox(
+                          width: cardWidth,
+                          height: 168,
+                          child: EndpointCard(
+                            key: ValueKey<String>(
+                              'endpoint-${endpoint.routeSegment}',
+                            ),
+                            endpoint: endpoint,
+                            onTap: () => context.pushNamed(
+                              RouteNames.list,
+                              pathParameters: <String, String>{
+                                'endpoint': endpoint.routeSegment,
+                              },
+                            ),
+                          ),
+                        );
+                      }).toList(growable: false),
+                    );
+                  },
+                ),
               ),
             ),
             SliverPadding(
@@ -187,13 +200,15 @@ class _DashboardHeader extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const Text(
-                      'DATOS ABIERTOS · COLOMBIA',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.1,
+                    Expanded(
+                      child: Text(
+                        'DATOS ABIERTOS · COLOMBIA',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.1,
+                        ),
                       ),
                     ),
                   ],
