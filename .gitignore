@@ -50,3 +50,7 @@ app.*.map.json
 # Archivo original del enunciado
 mobiles.html
 
+
+# Flutter metadata
+.metadata
+
